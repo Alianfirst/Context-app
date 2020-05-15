@@ -1,13 +1,13 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
+import { connect } from 'react-redux';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import Switch from '@material-ui/core/Switch';
-import { ThemeContext } from './contexts/ThemeContext';
-import { LanguageContext } from './contexts/LanguageContext';
+import { editLanguage, themeToggle } from '../actions';
 import { withStyles } from '@material-ui/core/styles';
 import styles from './styles/NavBarStyles';
 
@@ -31,9 +31,7 @@ const content = {
 };
 
 function Navbar(props) {
-	const { isDarkMode, toggleTheme } = useContext(ThemeContext);
-	const { language } = useContext(LanguageContext);
-	const { classes } = props;
+	const { classes, language, isDarkMode, themeToggle } = props;
 	const { search, flag } = content[language];
 	return (
 		<div className={classes.root}>
@@ -47,7 +45,7 @@ function Navbar(props) {
 					<Typography className={classes.title} variant="h6" color="inherit">
 						App Title
 					</Typography>
-					<Switch onChange={toggleTheme} />
+					<Switch onChange={themeToggle} />
 					<div className={classes.grow} />
 					<div className={classes.search}>
 						<div className={classes.searchIcon}>
@@ -67,4 +65,11 @@ function Navbar(props) {
 	);
 }
 
-export default withStyles(styles)(Navbar);
+const mapStateToProps = (state) => {
+	return {
+		language: state.language.language,
+		isDarkMode: state.isDarkMode.isDarkMode
+	};
+};
+
+export default connect(mapStateToProps, { editLanguage, themeToggle })(withStyles(styles)(Navbar));

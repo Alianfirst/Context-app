@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+import { connect } from 'react-redux';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -11,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import { LanguageContext } from './contexts/LanguageContext';
+import { editLanguage } from '../actions';
 import withStyles from '@material-ui/core/styles/withStyles';
 import styles from './styles/FormStyles';
 
@@ -43,8 +44,7 @@ const words = {
 };
 
 function Form(props) {
-	const { language, changeLanguage } = useContext(LanguageContext);
-	const { classes } = props;
+	const { classes, language, editLanguage } = props;
 	const { email, password, signIn, remember } = words[language];
 	return (
 		<main className={classes.main}>
@@ -53,7 +53,7 @@ function Form(props) {
 					<LockOutlinedIcon />
 				</Avatar>
 				<Typography variant="h5">{signIn}</Typography>
-				<Select value={language} onChange={changeLanguage}>
+				<Select value={language} onChange={editLanguage}>
 					<MenuItem value="english">English</MenuItem>
 					<MenuItem value="russian">Russian</MenuItem>
 					<MenuItem value="tatar">Tatar</MenuItem>
@@ -78,4 +78,8 @@ function Form(props) {
 	);
 }
 
-export default withStyles(styles)(Form);
+const mapStateToProps = (state) => {
+	return { language: state.language.language };
+};
+
+export default connect(mapStateToProps, { editLanguage })(withStyles(styles)(Form));
